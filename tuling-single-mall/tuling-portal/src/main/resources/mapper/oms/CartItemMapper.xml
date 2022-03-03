@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tulingxueyuan.mall.modules.oms.mapper.CartItemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.tulingxueyuan.mall.modules.oms.entity.CartItem">
+        <id column="id" property="id" />
+        <result column="product_id" property="productId" />
+        <result column="product_sku_id" property="productSkuId" />
+        <result column="member_id" property="memberId" />
+        <result column="quantity" property="quantity" />
+        <result column="price" property="price" />
+        <result column="product_pic" property="productPic" />
+        <result column="product_name" property="productName" />
+        <result column="product_sub_title" property="productSubTitle" />
+        <result column="product_sku_code" property="productSkuCode" />
+        <result column="member_nickname" property="memberNickname" />
+        <result column="create_date" property="createDate" />
+        <result column="modify_date" property="modifyDate" />
+        <result column="delete_status" property="deleteStatus" />
+        <result column="product_category_id" property="productCategoryId" />
+        <result column="product_brand" property="productBrand" />
+        <result column="product_sn" property="productSn" />
+        <result column="product_attr" property="productAttr" />
+    </resultMap>
+
+
+    <resultMap id="cartItemStockDTOListMap" extends="BaseResultMap" type="com.tulingxueyuan.mall.dto.CartItemStockDTO">
+        <result property="stock" column="stock"></result>
+    </resultMap>
+
+    <!--List<CartItemStockDTO> getCartItemStockDTOList(Long id);-->
+    <select id="getCartItemStockDTOList" resultMap="cartItemStockDTOListMap">
+        SELECT
+        *,(SELECT stock-lock_stock  FROM `pms_sku_stock` s WHERE s.id = c.`product_sku_id`) stock
+        FROM `oms_cart_item` c
+        WHERE c.`delete_status`=0 AND c.`member_id`=#{id}
+    </select>
+
+    <!-- List<CartItemStockDTO> getCartItemStockByIds(@Param(Constants.WRAPPER) Wrapper Wrapper);
+        queryWrapper在xml映射文件中也是可以使用的，并且，mybatis的xml映射文件写in（）条件很麻烦，
+        当查询条件中有in()的时候，更加推荐使用queryWrapper(使用：@Param(Constants.WRAPPER) Wrapper Wrapper + ${ew.customSqlSegment} )
+    -->
+    <select id="getCartItemStockByIds" resultMap="cartItemStockDTOListMap">
+        SELECT
+        *,(SELECT stock-lock_stock  FROM `pms_sku_stock` s WHERE s.id = c.`product_sku_id`) stock
+        FROM `oms_cart_item` c
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>

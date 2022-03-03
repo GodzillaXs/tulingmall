@@ -1,0 +1,54 @@
+server:
+  port: 8099
+
+spring:
+  application:
+    name: mall-admin
+  profiles:
+    active: dev
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    auto-mapping-behavior: partial
+    map-underscore-to-camel-case: true
+
+redis:
+  database: mall
+  key:
+    admin: 'ums:admin'
+    resourceList: 'ums:resourceList'
+  expire:
+    common: 86400 # 24小时
+
+jwt:
+  secret: fyl-Ouzo #私钥,随便配，别让外人知道就可
+  expiration: 86400 #24h，生效时间
+  tokenHead: Bearer #告诉客户端jwt令牌开头需要加的一个字符串，一般默认是Bearer
+  tokenHeader: Authorization #告诉客户端要在请求头添加的参数键值对中的key值，一般默认是Authorization
+  #tokenHead和tokenHeader的值都没有要求，但是一般会按默认的规范来，程序员之间的规范！效果就像这样，在Header中:
+  #   Authorization: Bearer eyJhbGciOiJIUzI1NiIsI.eyJpc3MiOiJodHRwczotcGxlL.mFrs3Zo8eaSNcxiNfvRh9dqKP4F1cB
+
+secure:
+  ignored:
+    urls: #安全路径白名单
+      - /swagger-ui.html
+      - /swagger-resources/**
+      - /swagger/**
+      - /**/v2/api-docs
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.ico
+      - /webjars/springfox-swagger-ui/**
+      - /actuator/**
+      - /druid/**
+      - /admin/login
+      - /admin/register
+      - /admin/logout
+      - /admin/info
+      - /error
+
